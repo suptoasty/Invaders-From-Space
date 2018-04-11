@@ -1,10 +1,13 @@
 #include <iostream>
 using namespace std;
 #include <SFML/Graphics.hpp>
-using namespace sf; 
+#include "Game.h"
+using namespace sf;
 
 //============================================================
-// YOUR HEADER WITH YOUR NAME GOES HERE. PLEASE DO NOT FORGET THIS
+// Jason Lonsinger
+// Programming II: MWF 12:30
+// Progam 8: Space Invaders
 //============================================================
 
 // note: a Sprite represents an image on screen. A sprite knows and remembers its own position
@@ -73,6 +76,7 @@ int main()
 	float shipY = window.getSize().y / 2.0f;
 	ship.setPosition(shipX, shipY);
 
+	SceneManager scene_manager; //handles stage/scene/whateveryoucallit and its actors/nodes/whatevers
 
 	while (window.isOpen())
 	{
@@ -87,9 +91,11 @@ int main()
 				window.close();
 			else if (event.type == Event::KeyPressed)
 			{
+				if (event.key.code == Keyboard::Escape)
+					window.close();
 				if (event.key.code == Keyboard::Space)
 				{
-					// handle space bar
+
 				}
 				
 			}
@@ -106,6 +112,17 @@ int main()
 		window.draw(background);
 
 		moveShip(ship);
+		//if won exit with win message
+		if (scene_manager.is_win())
+		{
+			std::cout << "WIN" << std::endl;
+			exit(EXIT_SUCCESS);
+		}
+		//check if any aliens were destroyed
+		else
+		{
+			scene_manager.update(window);
+		}
 
 		// draw the ship on top of background 
 		// (the ship from previous frame was erased when we drew background)
@@ -125,4 +142,3 @@ int main()
 
 	return 0;
 }
-
