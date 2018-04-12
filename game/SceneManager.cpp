@@ -4,7 +4,7 @@
 //might not be used
 std::list<Alien*>* SceneManager::get_alien_list() const
 {
-	return list_ptr;
+return list_ptr;
 }
 
 /*
@@ -13,10 +13,10 @@ std::list<Alien*>* SceneManager::get_alien_list() const
 void SceneManager::draw_aliens(sf::RenderWindow & window)
 {
 	std::list<Alien*>::iterator iter = alien_list.begin();
-	while(iter != alien_list.end())
+	while (iter != alien_list.end())
 	{
-			(*iter)->draw(window);
-			iter++;
+		(*iter)->draw(window);
+		iter++;
 	}
 }
 
@@ -61,7 +61,7 @@ bool SceneManager::get_switch_direction() const
 }
 
 /*
-	compares every missile_sprite to every alien_sprite and 
+	compares every missile_sprite to every alien_sprite and
 	if they intersect set the flag to be destroyed
 */
 void SceneManager::check_collision_state()
@@ -98,6 +98,15 @@ void SceneManager::check_collision_state()
 			iter++;
 		}
 	}
+	if (bomb_list.size() > 0)
+	{
+		std::list<Bomb*>::iterator iter = bomb_list.begin();
+		while (iter != bomb_list.end())
+		{
+			(*iter)->collision_check(m_player->get_sprite());
+			iter++;
+		}
+	}
 }
 
 //returns what level player is on
@@ -127,6 +136,18 @@ bool SceneManager::is_win() const
 void SceneManager::set_win(bool win)
 {
 	all_aliens_destroyed = win;
+}
+
+//checks if game is lost
+bool SceneManager::is_loss() const
+{
+	return player_destroyed;
+}
+
+//sets player_destroyed flag
+void SceneManager::set_lose(bool lose)
+{
+	player_destroyed = lose;
 }
 
 //makes missile objects and adds pointers to them to list
@@ -167,6 +188,49 @@ void SceneManager::draw_missiles(sf::RenderWindow &window)
 	}
 }
 
+void SceneManager::make_bomb()
+{
+	/*std::srand(std::time(NULL));
+	int magic_number = std::rand();
+	int count = 0;
+	std::list<Alien*>::iterator iter = alien_list.begin();
+	while (iter != alien_list.end())
+	{
+		std::cout << count << std::endl;
+		count++;
+		iter++;
+	}*/
+
+	//random alien position
+	if(bomb_list.size() < BOMB_LIMIT)
+		bomb_list.push_back(new Bomb(sf::Vector2f(400, 100)));
+}
+
+void SceneManager::destroy_bombs()
+{
+	if (bomb_list.size() > 0)
+	{
+		std::list<Bomb*>::iterator iter = bomb_list.begin();
+		while (iter != bomb_list.end())
+		{
+			if ((*iter)->is_destroyed())
+				iter = bomb_list.erase(iter++);
+			else
+				iter++;
+		}
+	}
+}
+
+void SceneManager::draw_bombs(sf::RenderWindow & window)
+{
+	std::list<Bomb*>::iterator iter = bomb_list.begin();
+	while (iter != bomb_list.end())
+	{
+		(*iter)->draw(window);
+		iter++;
+	}
+}
+
 //make new aliens
 void SceneManager::repopulate_scene()
 {
@@ -188,6 +252,12 @@ void SceneManager::repopulate_scene()
 			std::cout << "could not load alien2 " << std::endl;
 			exit(EXIT_FAILURE);
 		}
+		//see destructor with same commented out code
+		/*if (alien_texture_ptr != nullptr)
+		{
+			delete alien_texture_ptr;
+			alien_texture_ptr = nullptr;
+		}*/
 		alien_texture_ptr = &alien_texture2;
 	}
 	for (int i = 0; i < ALIEN_COUNT_COLUMN; i++)
@@ -218,6 +288,7 @@ void SceneManager::update(sf::RenderWindow & window)
 			if (event.key.code == sf::Keyboard::Space)
 			{
 				make_missile();
+				make_bomb();
 			}
 
 		}
@@ -228,8 +299,16 @@ void SceneManager::update(sf::RenderWindow & window)
 		check_collision_state();
 		destroy_missiles();
 		destroy_aliens();
+		destroy_bombs();
 		draw_missiles(window);
 		draw_aliens(window);
+		draw_bombs(window);
+
+		if (is_loss())
+		{
+			std::cout << "loose" << std::endl;
+			return;
+		}
 }
 
 //sets up the scene with enemies and a player

@@ -8,6 +8,7 @@ using namespace sf;
 // Jason Lonsinger
 // Programming II: MWF 12:30
 // Progam 8: Space Invaders
+// April 20th, 2018
 //============================================================
 
 int main()
