@@ -9,18 +9,11 @@ std::list<Alien*>* SceneManager::get_alien_list() const
 
 void SceneManager::draw_aliens(sf::RenderWindow & window)
 {
-	std::list<Alien*>::iterator iter;
-	for (iter = alien_list.begin(); iter != alien_list.end(); )
+	std::list<Alien*>::iterator iter = alien_list.begin();
+	while(iter != alien_list.end())
 	{
-		if ((*iter)->is_destroyed())
-		{
-			delete (*iter)->get_alien();
-		}
-		else 
-		{
 			(*iter)->draw(window);
 			iter++;
-		}
 	}
 }
 
@@ -67,15 +60,24 @@ void SceneManager::destroy_aliens()
 
 void SceneManager::check_collision_state()
 {
-	std::list<Alien*>::iterator iter = alien_list.begin();
-	std::list<Missile*>::iterator iter2 = missile_list.begin();
-		while (iter != alien_list.end() && iter2 != missile_list.end())
+	if (alien_list.size() > 0)
+	{
+		std::list<Alien*>::iterator iter = alien_list.begin();
+		while (iter != alien_list.end())
 		{
-				(*iter)->collision_state((*iter2)->get_sprite());
-				(*iter2)->collision_state((*iter)->get_sprite());
-				iter++;
-				iter2++;
+			if (missile_list.size() > 0)
+			{
+				std::list<Missile*>::iterator n = missile_list.begin();
+				while (n != missile_list.end())
+				{
+					(*iter)->collision_state((*n)->get_sprite());
+					(*n)->collision_state((*iter)->get_sprite());
+					n++;
+				}
+			}
+			iter++;
 		}
+	}
 }
 
 bool SceneManager::is_win() const
