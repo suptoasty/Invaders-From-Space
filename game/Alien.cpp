@@ -6,6 +6,11 @@ Alien * Alien::get_alien()
 	return this;
 }
 
+sf::Sprite Alien::get_sprite() const
+{
+	return alien_sprite;
+}
+
 sf::Vector2f Alien::get_position() const
 {
 	return position;
@@ -37,16 +42,19 @@ void Alien::draw(sf::RenderWindow & window)
 	window.draw(alien_sprite);
 }
 
-Alien::Alien()
+void Alien::collision_state(sf::Sprite missile)
 {
-	if (!alien_texture.loadFromFile("alien.png"))
+	if (alien_sprite.getGlobalBounds().intersects(missile.getGlobalBounds()))
 	{
-		std::cout << "Could not load anlien texture. " << std::endl;
-		exit(EXIT_FAILURE);
+		std::cout << "DESTROYING " << std::endl;
+		set_destroyed(true);
 	}
+}
 
-	alien_sprite.setTexture(alien_texture);
+Alien::Alien(sf::Texture* alien_texture)
+{
 
+	alien_sprite.setTexture((*alien_texture));
 	std::srand(std::time(NULL));
 	float x = std::rand() % 800;
 
@@ -57,15 +65,10 @@ Alien::Alien()
 	alien_sprite.setPosition(get_position());
 }
 
-Alien::Alien(float x, float y)
+Alien::Alien(float x, float y, sf::Texture* alien_texture)
 {
-	if (!alien_texture.loadFromFile("alien.png"))
-	{
-		std::cout << "Could not load anlien texture. " << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	alien_sprite.setTexture(alien_texture);
+	alien_sprite.setTexture((*alien_texture));
+	alien_sprite.setScale(sf::Vector2f(1.5, 1.5));
 	set_position(sf::Vector2f(x,y));
 	alien_sprite.setPosition(get_position());
 }
@@ -73,5 +76,5 @@ Alien::Alien(float x, float y)
 
 Alien::~Alien()
 {
-	//alien_sprite.setPosition(-get_position()); //ensure hidden
+	std::cout << "Alien DESTRUCT" << std::endl;
 }

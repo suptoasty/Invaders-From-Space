@@ -58,6 +58,13 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
+	Texture missile_texture;
+	if (!missile_texture.loadFromFile("missile.png"))
+	{
+		cout << "Unable to load missile texture" << endl;
+		exit(EXIT_FAILURE);
+	}
+
 	// A sprite is a thing we can draw and manipulate on the screen.
 	// We have to give it a "texture" to specify what it looks like
 
@@ -70,6 +77,9 @@ int main()
 	Sprite ship;
 	ship.setTexture(shipTexture);
 
+	Sprite missile;
+	missile.setTexture(missile_texture);
+
 
 	// initial position of the ship will be approx middle of screen
 	float shipX = window.getSize().x / 2.0f;
@@ -78,28 +88,38 @@ int main()
 
 	SceneManager scene_manager; //handles stage/scene/whateveryoucallit and its actors/nodes/whatevers
 
+	bool ismissile = false;
 	while (window.isOpen())
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
 		// For now, we just need this so we can click on the window and close it
-		Event event;
+		//Event event;
 
-		while (window.pollEvent(event))
+		//while (window.pollEvent(event))
+		//{
+		//	// "close requested" event: we close the window
+		//	if (event.type == Event::Closed)
+		//		window.close();
+		//	else if (event.type == Event::KeyPressed)
+		//	{
+		//		if (event.key.code == Keyboard::Escape)
+		//			window.close();
+		//		if (event.key.code == Keyboard::Space)
+		//		{
+		//			
+		//			ismissile = true;
+		//		}
+		//		
+		//	}
+		//}
+
+		if (ismissile)
 		{
-			// "close requested" event: we close the window
-			if (event.type == Event::Closed)
-				window.close();
-			else if (event.type == Event::KeyPressed)
-			{
-				if (event.key.code == Keyboard::Escape)
-					window.close();
-				if (event.key.code == Keyboard::Space)
-				{
+			missile.setPosition(ship.getPosition());
 
-				}
-				
-			}
+			ismissile = false;
 		}
+		missile.move(Vector2f(0, -5));
 
 		//===========================================================
 		// Everything from here to the end of the loop is where you put your
@@ -111,7 +131,6 @@ int main()
 		// will appear on top of background
 		window.draw(background);
 
-		moveShip(ship);
 		//if won exit with win message
 		if (scene_manager.is_win())
 		{
@@ -121,23 +140,21 @@ int main()
 		//check if any aliens were destroyed
 		else
 		{
-			scene_manager.update(window);
+			scene_manager.update(window, missile);
+			// draw the ship on top of background 
+			// (the ship from previous frame was erased when we drew background)
+			window.draw(missile);
+
+
+			// end the current frame; this makes everything that we have 
+			// already "drawn" actually show up on the screen
+			window.display();
+
+			// At this point the frame we have built is now visible on screen.
+			// Now control will go back to the top of the animation loop
+			// to build the next frame. Since we begin by drawing the
+			// background, each frame is rebuilt from scratch.
 		}
-
-		// draw the ship on top of background 
-		// (the ship from previous frame was erased when we drew background)
-		window.draw(ship);
-
-
-		// end the current frame; this makes everything that we have 
-		// already "drawn" actually show up on the screen
-		window.display();
-
-		// At this point the frame we have built is now visible on screen.
-		// Now control will go back to the top of the animation loop
-		// to build the next frame. Since we begin by drawing the
-		// background, each frame is rebuilt from scratch.
-
 	} // end body of animation loop
 
 	return 0;
