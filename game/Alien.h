@@ -9,11 +9,17 @@ private:
 	sf::Vector2f position; //stores position
 	bool destroyed = false; //used to poll state
 
+	bool hit_bound = false; //toggled to move all aliens in same direction
+
 public:
 	Alien * get_alien(); //returns this ptr to object
 
 	sf::Sprite get_sprite() const;
 
+	void move();
+
+	bool get_hit_bound()const;
+	void set_hit_bound(bool hit);
 
 	sf::Vector2f get_position() const; //returns the position member var
 	void set_position(sf::Vector2f pos); //sets position member var

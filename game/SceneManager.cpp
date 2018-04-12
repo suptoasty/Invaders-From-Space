@@ -50,6 +50,16 @@ void SceneManager::destroy_aliens()
 			set_win(true);
 }
 
+void SceneManager::set_switch_direction(bool change)
+{
+	switch_direction = change;
+}
+
+bool SceneManager::get_switch_direction() const
+{
+	return switch_direction;
+}
+
 /*
 	compares every missile_sprite to every alien_sprite and 
 	if they intersect set the flag to be destroyed
@@ -61,6 +71,20 @@ void SceneManager::check_collision_state()
 		std::list<Alien*>::iterator iter = alien_list.begin();
 		while (iter != alien_list.end())
 		{
+			if ((*iter)->get_sprite().getGlobalBounds().intersects(left_bound.getGlobalBounds()) || (*iter)->get_sprite().getGlobalBounds().intersects(right_bound.getGlobalBounds()))
+			{
+				set_switch_direction(!get_switch_direction());
+			}
+
+			if (switch_direction == true)
+			{
+				std::list<Alien*>::iterator i = alien_list.begin();
+				while (i != alien_list.end())
+				{
+					(*i)->set_hit_bound(true);
+					i++;
+				}
+			}
 			if (missile_list.size() > 0)
 			{
 				std::list<Missile*>::iterator n = missile_list.begin();
@@ -166,9 +190,9 @@ void SceneManager::repopulate_scene()
 		}
 		alien_texture_ptr = &alien_texture2;
 	}
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < ALIEN_COUNT_COLUMN; i++)
 	{
-		for (int n = 0; n < ALIEN_COUNT; n++)
+		for (int n = 0; n < ALIEN_COUNT_ROW; n++)
 			alien_list.push_back(new Alien(225 + (static_cast<float>(n)*(11 * 3)), 100+(50.0f*i), alien_texture_ptr));
 	}
 	if (alien_list.empty())
@@ -178,7 +202,7 @@ void SceneManager::repopulate_scene()
 }
 
 //updates game state by calling member functions like draws() and destroyes() also polls window events
-void SceneManager::update(sf::RenderWindow & window, sf::Sprite &missile)
+void SceneManager::update(sf::RenderWindow & window)
 {
 	sf::Event event;
 
@@ -198,7 +222,8 @@ void SceneManager::update(sf::RenderWindow & window, sf::Sprite &missile)
 
 		}
 	}
-		//m_player->poll_events(window);
+		window.draw(left_bound);
+		window.draw(right_bound);
 		m_player->draw(window);
 		check_collision_state();
 		destroy_missiles();
@@ -210,10 +235,17 @@ void SceneManager::update(sf::RenderWindow & window, sf::Sprite &missile)
 //sets up the scene with enemies and a player
 SceneManager::SceneManager()
 {
+	left_bound.setSize(sf::Vector2f(1, 800));
+	left_bound.setPosition(sf::Vector2f(-1, 0));
+
+	right_bound.setSize(sf::Vector2f(1, 800));
+	right_bound.setPosition(sf::Vector2f(800, 0));
+
 	//creates player
 	m_player = new Player;
 	
 	repopulate_scene();
+
 }
 
 //cleans up after winning

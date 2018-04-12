@@ -10,30 +10,6 @@ using namespace sf;
 // Progam 8: Space Invaders
 //============================================================
 
-// note: a Sprite represents an image on screen. A sprite knows and remembers its own position
-// ship.move(offsetX, offsetY) adds offsetX, offsetY to 
-// the current position of the ship. 
-// x is horizontal, y is vertical. 
-// 0,0 is in the UPPER LEFT of the screen, y increases DOWN the screen
-void moveShip(Sprite& ship)
-{
-	const float DISTANCE = 5.0;
-
-	if (Keyboard::isKeyPressed(Keyboard::Left))
-	{
-		// left arrow is pressed: move our ship left 5 pixels
-		// 2nd parm is y direction. We don't want to move up/down, so it's zero.
-		ship.move(-DISTANCE, 0);
-	}
-	else if (Keyboard::isKeyPressed(Keyboard::Right))
-	{
-		// right arrow is pressed: move our ship right 5 pixels
-		ship.move(DISTANCE, 0);
-	}
-}
-
-
-
 int main()
 {
 	const int WINDOW_WIDTH = 800;
@@ -43,14 +19,6 @@ int main()
 	// Limit the framerate to 60 frames per second
 	window.setFramerateLimit(60);
 
-	// load textures from file into memory. This doesn't display anything yet.
-	// Notice we do this *before* going into animation loop.
-	Texture shipTexture;
-	if (!shipTexture.loadFromFile("ship.png"))
-	{
-		cout << "Unable to load ship texture!" << endl;
-		exit(EXIT_FAILURE);
-	}
 	Texture starsTexture;
 	if (!starsTexture.loadFromFile("stars.jpg"))
 	{
@@ -58,69 +26,15 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-	Texture missile_texture;
-	if (!missile_texture.loadFromFile("missile.png"))
-	{
-		cout << "Unable to load missile texture" << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	// A sprite is a thing we can draw and manipulate on the screen.
-	// We have to give it a "texture" to specify what it looks like
-
 	Sprite background;
 	background.setTexture(starsTexture);
 	// The texture file is 640x480, so scale it up a little to cover 800x600 window
 	background.setScale(1.5, 1.5);
 
-	// create sprite and texture it
-	Sprite ship;
-	ship.setTexture(shipTexture);
-
-	Sprite missile;
-	missile.setTexture(missile_texture);
-
-
-	// initial position of the ship will be approx middle of screen
-	float shipX = window.getSize().x / 2.0f;
-	float shipY = window.getSize().y / 2.0f;
-	ship.setPosition(shipX, shipY);
-
 	SceneManager scene_manager; //handles stage/scene/whateveryoucallit and its actors/nodes/whatevers
 
-	bool ismissile = false;
 	while (window.isOpen())
 	{
-		// check all the window's events that were triggered since the last iteration of the loop
-		// For now, we just need this so we can click on the window and close it
-		//Event event;
-
-		//while (window.pollEvent(event))
-		//{
-		//	// "close requested" event: we close the window
-		//	if (event.type == Event::Closed)
-		//		window.close();
-		//	else if (event.type == Event::KeyPressed)
-		//	{
-		//		if (event.key.code == Keyboard::Escape)
-		//			window.close();
-		//		if (event.key.code == Keyboard::Space)
-		//		{
-		//			
-		//			ismissile = true;
-		//		}
-		//		
-		//	}
-		//}
-
-		if (ismissile)
-		{
-			missile.setPosition(ship.getPosition());
-
-			ismissile = false;
-		}
-		missile.move(Vector2f(0, -5));
-
 		//===========================================================
 		// Everything from here to the end of the loop is where you put your
 		// code to produce ONE frame of the animation. The next iteration of the loop will
@@ -140,10 +54,9 @@ int main()
 		//check if any aliens were destroyed
 		else
 		{
-			scene_manager.update(window, missile);
+			scene_manager.update(window);
 			// draw the ship on top of background 
 			// (the ship from previous frame was erased when we drew background)
-			window.draw(missile);
 
 
 			// end the current frame; this makes everything that we have 
