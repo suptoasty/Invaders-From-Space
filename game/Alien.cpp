@@ -47,12 +47,12 @@ void Alien::set_position(sf::Vector2f pos)
 
 bool Alien::is_destroyed() const
 {
-	return destroyed;
+	return destroy;
 }
 
-void Alien::set_destroyed(bool destroy)
+void Alien::set_destroy(bool m_destroy)
 {
-	destroyed = destroy;
+	destroy = m_destroy;
 }
 
 void Alien::draw(sf::RenderWindow & window)
@@ -64,11 +64,11 @@ void Alien::draw(sf::RenderWindow & window)
 	window.draw(alien_sprite);
 }
 
-void Alien::collision_state(sf::Sprite missile)
+void Alien::collision_check(sf::Sprite missile)
 {
 	if (alien_sprite.getGlobalBounds().intersects(missile.getGlobalBounds()))
 	{
-		set_destroyed(true);
+		set_destroy(true);
 	}
 }
 

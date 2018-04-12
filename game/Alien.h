@@ -7,7 +7,7 @@ class Alien
 private:
 	sf::Sprite alien_sprite; //stores movable/scalable image
 	sf::Vector2f position; //stores position
-	bool destroyed = false; //used to poll state
+	bool destroy = false; //used to poll state
 
 	bool hit_bound = false; //toggled to move all aliens in same direction
 
@@ -22,13 +22,13 @@ public:
 	void set_hit_bound(bool hit);
 
 	sf::Vector2f get_position() const; //returns the position member var
-	void set_position(sf::Vector2f pos); //sets position member var
+	void set_position(sf::Vector2f m_position); //sets position member var
 
 	bool is_destroyed() const; //returns destroyed
-	void set_destroyed(bool destroy); //if collided set true, scnmngr checks on draw for destroyed objects and frees
+	void set_destroy(bool m_destroyed); //if collided set true, scnmngr checks on draw for destroyed objects and frees
 
 	void draw(sf::RenderWindow &window); //draws the object...called by scene_manager through iterator to linked list
-	void collision_state(sf::Sprite missile); //checks if missile collides then re-evaluates destroyed
+	void collision_check(sf::Sprite missile); //checks if missile collides then re-evaluates destroyed
 
 	Alien(sf::Texture *alien_texture); //randomizes position
 	Alien(float x, float y, sf::Texture *alien_texture); //set default position

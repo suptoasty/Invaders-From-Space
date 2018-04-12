@@ -9,6 +9,8 @@ private:
 	sf::Sprite player_sprite;
 	sf::Vector2f position{ 400,500 };
 
+	bool destroy = false;
+
 
 public:
 	Player * get_player();
@@ -18,7 +20,12 @@ public:
 	sf::Sprite get_sprite()const;
 	void set_sprite(sf::Sprite m_player_sprite);
 
+	bool is_destroyed()const;
+	void set_destroy(bool m_destroyed);
+
 	sf::Vector2f get_position() const;
+
+	void collision_check(sf::Sprite bomb);
 	void set_position(sf::Vector2f m_position);
 	void poll_events(sf::RenderWindow &window);
 	void move_player();

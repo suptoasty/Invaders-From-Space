@@ -26,9 +26,25 @@ void Player::set_sprite(sf::Sprite m_player_sprite)
 {
 }
 
+bool Player::is_destroyed() const
+{
+	return destroy;
+}
+
+void Player::set_destroy(bool m_destroyed)
+{
+	destroy = m_destroyed;
+}
+
 sf::Vector2f Player::get_position() const
 {
 	return position;
+}
+
+void Player::collision_check(sf::Sprite bomb)
+{
+	if (get_sprite().getGlobalBounds().intersects(bomb.getGlobalBounds()))
+		set_destroy(true);
 }
 
 void Player::set_position(sf::Vector2f m_position)

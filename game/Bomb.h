@@ -17,7 +17,7 @@ public:
 	sf::Sprite get_sprite()const;
 
 	bool is_destroyed()const;
-	void set_destroy(bool destroyed);
+	void set_destroy(bool m_destroyed);
 
 	void collision_check(sf::Sprite player);
 	void move_bomb();

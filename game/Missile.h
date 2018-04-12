@@ -16,9 +16,9 @@ public:
 	sf::Sprite get_sprite()const;
 
 	bool is_destroyed()const;
-	void set_destroyed(bool destroy);
+	void set_destroy(bool m_destroyed);
 
-	void collision_state(sf::Sprite alien);
+	void collision_check(sf::Sprite alien);
 
 	void move_missile();
 	void draw(sf::RenderWindow &window);

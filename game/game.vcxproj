@@ -150,6 +150,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Missile.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Missile.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneManager.h" />
   </ItemGroup>

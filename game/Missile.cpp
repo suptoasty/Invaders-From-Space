@@ -17,12 +17,12 @@ bool Missile::is_destroyed() const
 	return destroy;
 }
 
-void Missile::set_destroyed(bool destroy)
+void Missile::set_destroy(bool m_destroy)
 {
-	destroy = destroy;
+	destroy = m_destroy;
 }
 
-void Missile::collision_state(sf::Sprite alien)
+void Missile::collision_check(sf::Sprite alien)
 {
 	if (get_sprite().getGlobalBounds().intersects(alien.getGlobalBounds()))
 		destroy = true;

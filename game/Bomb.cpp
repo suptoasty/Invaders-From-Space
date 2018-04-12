@@ -13,9 +13,9 @@ bool Bomb::is_destroyed() const
 }
 
 //sets destroy flag
-void Bomb::set_destroy(bool destroyed)
+void Bomb::set_destroy(bool m_destroy)
 {
-	destroy = destroyed;
+	destroy = m_destroy;
 }
 
 //check of outside window

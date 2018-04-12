@@ -66,6 +66,10 @@ bool SceneManager::get_switch_direction() const
 */
 void SceneManager::check_collision_state()
 {
+	if (m_player->is_destroyed())
+	{
+		set_lose(true);
+	}
 	if (alien_list.size() > 0)
 	{
 		std::list<Alien*>::iterator iter = alien_list.begin();
@@ -90,8 +94,8 @@ void SceneManager::check_collision_state()
 				std::list<Missile*>::iterator n = missile_list.begin();
 				while (n != missile_list.end())
 				{
-					(*iter)->collision_state((*n)->get_sprite());
-					(*n)->collision_state((*iter)->get_sprite());
+					(*iter)->collision_check((*n)->get_sprite());
+					(*n)->collision_check((*iter)->get_sprite());
 					n++;
 				}
 			}
@@ -104,6 +108,9 @@ void SceneManager::check_collision_state()
 		while (iter != bomb_list.end())
 		{
 			(*iter)->collision_check(m_player->get_sprite());
+			m_player->collision_check((*iter)->get_sprite());
+			if(m_player->is_destroyed() == true)
+				m_player->set_destroy(true);
 			iter++;
 		}
 	}
@@ -307,8 +314,16 @@ void SceneManager::update(sf::RenderWindow & window)
 		if (is_loss())
 		{
 			std::cout << "loose" << std::endl;
-			return;
+			exit(EXIT_SUCCESS);
 		}
+}
+
+void SceneManager::game_started()
+{
+	//creates player
+	m_player = new Player;
+
+	repopulate_scene();
 }
 
 //sets up the scene with enemies and a player
@@ -319,12 +334,6 @@ SceneManager::SceneManager()
 
 	right_bound.setSize(sf::Vector2f(1, 800));
 	right_bound.setPosition(sf::Vector2f(800, 0));
-
-	//creates player
-	m_player = new Player;
-	
-	repopulate_scene();
-
 }
 
 //cleans up after winning

@@ -69,6 +69,7 @@ public:
 	void set_lose(bool lose);
 	void check_collision_state();
 	void update(sf::RenderWindow &window);
+	void game_started();
 
 	SceneManager();
 	~SceneManager();
