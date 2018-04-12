@@ -45,7 +45,6 @@ void Missile::draw(sf::RenderWindow & window)
 
 Missile::Missile(sf::Vector2f position)
 {
-	std::cout << "Make Missile" << std::endl;
 	if (!missile_texture.loadFromFile("missile.png"))
 	{
 		std::cout << "missile texture not load" << std::endl;
@@ -58,5 +57,4 @@ Missile::Missile(sf::Vector2f position)
 
 Missile::~Missile()
 {
-	std::cout << "MISSILE DESTRUCT" << std::endl;
 }

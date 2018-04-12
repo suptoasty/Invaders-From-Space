@@ -46,20 +46,18 @@ void Alien::collision_state(sf::Sprite missile)
 {
 	if (alien_sprite.getGlobalBounds().intersects(missile.getGlobalBounds()))
 	{
-		std::cout << "DESTROYING " << std::endl;
 		set_destroyed(true);
 	}
 }
 
 Alien::Alien(sf::Texture* alien_texture)
 {
-
 	alien_sprite.setTexture((*alien_texture));
 	std::srand(std::time(NULL));
-	float x = std::rand() % 800;
 
-	//std::srand(std::time(NULL));
+	float x = std::rand() % 800;
 	float y = std::rand() % 600;
+
 	set_position(sf::Vector2f(x,y));
 
 	alien_sprite.setPosition(get_position());
@@ -76,5 +74,4 @@ Alien::Alien(float x, float y, sf::Texture* alien_texture)
 
 Alien::~Alien()
 {
-	std::cout << "Alien DESTRUCT" << std::endl;
 }

@@ -1,12 +1,15 @@
 #include "SceneManager.h"
 
 
-
+//might not be used
 std::list<Alien*>* SceneManager::get_alien_list() const
 {
 	return list_ptr;
 }
 
+/*
+	draws every alien in alien_list
+*/
 void SceneManager::draw_aliens(sf::RenderWindow & window)
 {
 	std::list<Alien*>::iterator iter = alien_list.begin();
@@ -17,29 +20,12 @@ void SceneManager::draw_aliens(sf::RenderWindow & window)
 	}
 }
 
+/*
+	goes through list and deletes all aliens with the destroy flag set to true
+	if no aliens are in the list trigger win condition
+*/
 void SceneManager::destroy_aliens()
 {
-	////make it delete aliens that have destroyed == true from the list
-	//std::list<Alien*>::iterator iter = alien_list.begin();
-	//	while (iter != alien_list.end())
-	//	{
-	//		//delete all aliens that have the flag destroyed set
-
-	//		if ((*iter)->is_destroyed())
-	//		{
-	//			if((iter != alien_list.end()) && (next(iter) == alien_list.end()))
-	//			{
-	//				std::cout << "destroy end" << std::endl;
-	//				alien_list.pop_back();
-	//			}
-	//			else
-	//				iter = alien_list.erase(iter);
-	//		}
-	//		if (*iter > 0)
-	//			iter++;
-	//		else
-	//			set_win(true);
-	//	}
 	if (alien_list.size() > 0)
 	{
 		std::list<Alien*>::iterator iter = alien_list.begin();
@@ -55,9 +41,19 @@ void SceneManager::destroy_aliens()
 		}
 	}
 	else
-		set_win(true);
+		if (get_level() == 1)
+		{
+			next_level();
+			repopulate_scene();
+		}
+		else
+			set_win(true);
 }
 
+/*
+	compares every missile_sprite to every alien_sprite and 
+	if they intersect set the flag to be destroyed
+*/
 void SceneManager::check_collision_state()
 {
 	if (alien_list.size() > 0)
@@ -80,6 +76,20 @@ void SceneManager::check_collision_state()
 	}
 }
 
+//returns what level player is on
+int SceneManager::get_level() const
+{
+	return level;
+}
+
+//increments level (capped at 2)
+void SceneManager::next_level()
+{
+	if (get_level() < 2)
+		level++;
+}
+
+//checks if the game was won
 bool SceneManager::is_win() const
 {
 	if (all_aliens_destroyed == true)
@@ -89,11 +99,13 @@ bool SceneManager::is_win() const
 	return false;
 }
 
+//changes the win flag
 void SceneManager::set_win(bool win)
 {
 	all_aliens_destroyed = win;
 }
 
+//makes missile objects and adds pointers to them to list
 void SceneManager::make_missile()
 {
 	if (missile_list.size() != 5)
@@ -102,6 +114,7 @@ void SceneManager::make_missile()
 	}
 }
 
+//removes all missiles with the destroy flag set to true from missile_list
 void SceneManager::destroy_missiles()
 {
 	if (missile_list.size() > 0)
@@ -119,6 +132,7 @@ void SceneManager::destroy_missiles()
 	}
 }
 
+//draws all missiles in missile_list
 void SceneManager::draw_missiles(sf::RenderWindow &window)
 {
 	std::list<Missile*>::iterator iter = missile_list.begin();
@@ -129,6 +143,41 @@ void SceneManager::draw_missiles(sf::RenderWindow &window)
 	}
 }
 
+//make new aliens
+void SceneManager::repopulate_scene()
+{
+	std::cout << "Level: " << get_level() << std::endl;
+	if (get_level() == 1)
+	{
+		//creates rows of aliens
+		if (!alien_texture.loadFromFile("alien.png"))
+		{
+			std::cout << "Could not load anlien texture. " << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		alien_texture_ptr = &alien_texture;
+	}
+	if(get_level() == 2)
+	{
+		if (!alien_texture2.loadFromFile("alien2.png"))
+		{
+			std::cout << "could not load alien2 " << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		alien_texture_ptr = &alien_texture2;
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		for (int n = 0; n < ALIEN_COUNT; n++)
+			alien_list.push_back(new Alien(225 + (static_cast<float>(n)*(11 * 3)), 100+(50.0f*i), alien_texture_ptr));
+	}
+	if (alien_list.empty())
+	{
+		std::cout << "No aliens" << std::endl;
+	}
+}
+
+//updates game state by calling member functions like draws() and destroyes() also polls window events
 void SceneManager::update(sf::RenderWindow & window, sf::Sprite &missile)
 {
 	sf::Event event;
@@ -158,32 +207,27 @@ void SceneManager::update(sf::RenderWindow & window, sf::Sprite &missile)
 		draw_aliens(window);
 }
 
+//sets up the scene with enemies and a player
 SceneManager::SceneManager()
 {
-	//list_ptr = &alien_list;
+	//creates player
 	m_player = new Player;
-
-	if (!alien_texture.loadFromFile("alien.png"))
-	{
-		std::cout << "Could not load anlien texture. " << std::endl;
-		exit(EXIT_FAILURE);
-	}
 	
-	alien_texture_ptr = &alien_texture;
-	for (int i = 0; i < ALIEN_COUNT; i++)
-	{	
-		alien_list.push_back(new Alien(20.0f+(static_cast<float>(i)*(11*3)), 50.0f, alien_texture_ptr));
-	}
-	if (alien_list.empty())
-	{
-		std::cout << "empyyy" << std::endl;
-	}
-
+	repopulate_scene();
 }
 
-
+//cleans up after winning
 SceneManager::~SceneManager()
 {
-	delete m_player;
-	m_player = nullptr;
+	if (m_player != nullptr) 
+	{
+		delete m_player;
+		m_player = nullptr;
+	}
+	//causes crash on exit
+	/*if (alien_texture_ptr != nullptr)
+	{
+		delete alien_texture_ptr;
+		alien_texture_ptr = nullptr;
+	}*/
 }
