@@ -16,10 +16,7 @@ public:
 
 	sf::Sprite get_sprite() const;
 
-	void move();
-
-	bool get_hit_bound()const;
-	void set_hit_bound(bool hit);
+	void move(float &speed);
 
 	sf::Vector2f get_position() const; //returns the position member var
 	void set_position(sf::Vector2f m_position); //sets position member var
@@ -27,7 +24,7 @@ public:
 	bool is_destroyed() const; //returns destroyed
 	void set_destroy(bool m_destroyed); //if collided set true, scnmngr checks on draw for destroyed objects and frees
 
-	void draw(sf::RenderWindow &window); //draws the object...called by scene_manager through iterator to linked list
+	void draw(sf::RenderWindow &window, float &speed); //draws the object...called by scene_manager through iterator to linked list
 	void collision_check(sf::Sprite missile); //checks if missile collides then re-evaluates destroyed
 
 	Alien(sf::Texture *alien_texture); //randomizes position

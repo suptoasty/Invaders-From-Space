@@ -11,26 +11,9 @@ sf::Sprite Alien::get_sprite() const
 	return alien_sprite;
 }
 
-void Alien::move()
+void Alien::move(float &speed)
 {
-	float DIRECTION = 3.0f;
-	if (get_hit_bound() == true)
-	{
-		DIRECTION *= -1;
-		set_hit_bound(false); //bound changes to other side of the screen so this is toggled off
-	}
-
-	alien_sprite.move(DIRECTION, 0);
-}
-
-bool Alien::get_hit_bound() const
-{
-	return hit_bound;
-}
-
-void Alien::set_hit_bound(bool hit)
-{
-	hit_bound = hit;
+	alien_sprite.move(speed, 0);
 }
 
 sf::Vector2f Alien::get_position() const
@@ -55,10 +38,10 @@ void Alien::set_destroy(bool m_destroy)
 	destroy = m_destroy;
 }
 
-void Alien::draw(sf::RenderWindow & window)
+void Alien::draw(sf::RenderWindow & window, float &speed)
 {
 	//always update position
-	move(); //easier than iterating through agian for move
+	move(speed); //easier than iterating through agian for move
 
 	//what actually draws the alien
 	window.draw(alien_sprite);
