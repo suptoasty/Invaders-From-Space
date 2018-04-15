@@ -178,6 +178,7 @@ void SceneManager::set_lose(bool lose)
 /*
 compares every missile_sprite to every alien_sprite and
 if they intersect set the flag to be destroyed
+also works bomb log...threw it in here because I got lazy and iterating through what bombs are deleted
 */
 void SceneManager::check_collision_state()
 {
@@ -215,12 +216,12 @@ void SceneManager::check_collision_state()
 			}
 		}
 		else {
-			std::srand(std::time(NULL));
+			std::srand(std::time(NULL)+random);
 			random = std::rand() % 2;
-			int random2 = std::rand() % 2;
 			std::list<Alien*>::iterator i = alien_list.begin();
 			while (i != alien_list.end())
 			{
+				int random2 = std::rand() % 2;
 				if (random == random2)
 				{
 					make_bomb((*i)->get_sprite());
