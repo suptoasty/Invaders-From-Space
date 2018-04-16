@@ -11,9 +11,9 @@ sf::Sprite Alien::get_sprite() const
 	return alien_sprite;
 }
 
-void Alien::move(float &speed)
+void Alien::move(float &speed, float &down_speed)
 {
-	alien_sprite.move(speed, 0);
+	alien_sprite.move(speed, down_speed);
 }
 
 sf::Vector2f Alien::get_position() const
@@ -38,10 +38,10 @@ void Alien::set_destroy(bool m_destroy)
 	destroy = m_destroy;
 }
 
-void Alien::draw(sf::RenderWindow & window, float &speed)
+void Alien::draw(sf::RenderWindow & window, float &speed, float &down_speed)
 {
 	//always update position
-	move(speed); //easier than iterating through agian for move
+	move(speed, down_speed); //easier than iterating through agian for move
 
 	//what actually draws the alien
 	window.draw(alien_sprite);

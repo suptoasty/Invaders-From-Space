@@ -13,8 +13,6 @@ using namespace sf;
 
 int main()
 {
-
-	bool start = false;
 	const int WINDOW_WIDTH = 800;
 	const int WINDOW_HEIGHT = 600;
 
@@ -55,12 +53,18 @@ int main()
 	SceneManager scene_manager; //handles stage/scene/whateveryoucallit and its actors/nodes/whatevers
 	while (window.isOpen())
 	{
-		while (!start)
+		while (!scene_manager.start)
 		{
 			Event event;
 			while (window.pollEvent(event))
 			{
+				if (scene_manager.is_loss())
+				{
+					scene_manager.clean_up();
+					scene_manager.set_lose(false);
+					scene_manager.set_win(false);
 
+				}
 				// "close requested" event: we close the window
 				if (event.type == Event::Closed)
 				{
@@ -71,7 +75,7 @@ int main()
 					if (event.key.code == Keyboard::Space)
 					{
 						scene_manager.game_started();
-						start = true;
+						scene_manager.start = true;
 					}
 			}
 			
@@ -103,18 +107,7 @@ int main()
 		else
 		{
 			scene_manager.update(window);
-			// draw the ship on top of background 
-			// (the ship from previous frame was erased when we drew background)
-
-
-			// end the current frame; this makes everything that we have 
-			// already "drawn" actually show up on the screen
 			window.display();
-
-			// At this point the frame we have built is now visible on screen.
-			// Now control will go back to the top of the animation loop
-			// to build the next frame. Since we begin by drawing the
-			// background, each frame is rebuilt from scratch.
 		}
 	} // end body of animation loop
 

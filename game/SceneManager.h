@@ -20,6 +20,7 @@ private:
 	std::list<Alien*> alien_list; //linked list of Alien objects
 
 	float alien_speed = 3.0f; //used for direction and speed after aliens are destroyed
+	float alien_down_speed = 0.0f;
 	
 	//missiles
 	const int MISSILE_LIMIT = 5;
@@ -41,7 +42,7 @@ private:
 
 
 public:
-
+	bool start = false;
 	//aliens
 	void draw_aliens(sf::RenderWindow &window); //calls draw in all aliens passing them the window to draw themselves on
 	void destroy_aliens(); //use to test delting from list
@@ -71,6 +72,7 @@ public:
 	void check_collision_state();
 	void update(sf::RenderWindow &window);
 	void game_started();
+	void clean_up();
 
 	SceneManager();
 	~SceneManager();

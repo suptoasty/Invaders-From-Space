@@ -12,7 +12,7 @@ void SceneManager::draw_aliens(sf::RenderWindow & window)
 	std::list<Alien*>::iterator iter = alien_list.begin();
 	while (iter != alien_list.end())
 	{
-		(*iter)->draw(window, alien_speed);
+		(*iter)->draw(window, alien_speed, alien_down_speed);
 		iter++;
 	}
 }
@@ -187,10 +187,6 @@ void SceneManager::check_collision_state()
 		std::list<Alien*>::iterator a_iter = alien_list.begin();
 		while (a_iter != alien_list.end())
 		{
-			if ((*a_iter)->get_sprite().getPosition().x < 0 || (*a_iter)->get_sprite().getPosition().x > 799)
-			{
-				alien_speed *= -1;
-			}
 			std::list<Missile*>::iterator m_iter = missile_list.begin();
 			while (m_iter != missile_list.end())
 			{
@@ -201,6 +197,15 @@ void SceneManager::check_collision_state()
 				}
 				m_iter++;
 			}
+			if ((*a_iter)->get_sprite().getPosition().x < 0 || (*a_iter)->get_sprite().getPosition().x > 799)
+			{
+				alien_speed *= -1;
+				alien_down_speed = 100.0f;
+			}
+			else if ((*a_iter)->get_sprite().getPosition().x > 0 && (*a_iter)->get_sprite().getPosition().x < 800)
+				alien_down_speed = 0.0f;
+			if ((*a_iter)->get_sprite().getPosition().y >= 500)
+				m_player->set_destroy(true);
 			a_iter++;
 		}
 		if (bomb_list.size() != 0)
@@ -221,7 +226,7 @@ void SceneManager::check_collision_state()
 			std::list<Alien*>::iterator i = alien_list.begin();
 			while (i != alien_list.end())
 			{
-				int random2 = std::rand() % 2;
+				int random2 = std::rand() % 1;
 				if (random == random2)
 				{
 					make_bomb((*i)->get_sprite());
@@ -237,6 +242,7 @@ void SceneManager::check_collision_state()
 //make new aliens
 void SceneManager::repopulate_scene()
 {
+	alien_speed = 3.0f;
 	//inform on level in terminal
 	std::cout << "Level: " << get_level() << std::endl;
 
@@ -286,6 +292,13 @@ void SceneManager::repopulate_scene()
 //updates game state by calling member functions like draws() and destroyes() also polls window events
 void SceneManager::update(sf::RenderWindow & window)
 {
+	//might as well set it in collision check
+	if (m_player->is_destroyed())
+	{
+		start = false;
+		set_lose(true);
+	}
+
 	m_player->draw(window);
 	draw_aliens(window);
 	draw_missiles(window);
@@ -296,10 +309,6 @@ void SceneManager::update(sf::RenderWindow & window)
 	destroy_bombs();
 
 	check_collision_state();
-
-	//might as well set it in collision check
-	if (m_player->is_destroyed())
-		set_lose(true);
 
 	sf::Event event;
 
@@ -319,11 +328,8 @@ void SceneManager::update(sf::RenderWindow & window)
 
 		}
 	}
-	if (is_loss())
-	{
-		std::cout << "loose" << std::endl;
-		exit(EXIT_SUCCESS);
-	}
+
+	//alien_down_speed = 0.0f;
 }
 
 void SceneManager::game_started()
@@ -332,6 +338,39 @@ void SceneManager::game_started()
 	m_player = new Player;
 
 	repopulate_scene();
+}
+
+void SceneManager::clean_up()
+{
+	alien_speed = 3.0f;
+	level = 1;
+	if (m_player->is_destroyed())
+	{
+		std::cout << "loose" << std::endl;
+		if (alien_list.size() > 0)
+		{
+			std::list<Alien*>::iterator a_iter = alien_list.begin();
+			while (a_iter != alien_list.end() && alien_list.size() != 0)
+			{
+				a_iter = alien_list.erase(a_iter++);
+
+			}
+			std::list<Bomb*>::iterator b_iter = bomb_list.begin();
+			while (b_iter != bomb_list.end() && bomb_list.size() != 0)
+			{
+				b_iter = bomb_list.erase(b_iter++);
+
+			}
+			std::list<Missile*>::iterator m_iter = missile_list.begin();
+			while (m_iter != missile_list.end() && missile_list.size() != 0)
+			{
+				m_iter = missile_list.erase(m_iter++);
+
+			}
+
+		}
+	}
+	delete m_player;
 }
 
 //sets up the scene with enemies and a player
