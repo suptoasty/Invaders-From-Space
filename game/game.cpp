@@ -50,6 +50,13 @@ int main()
 	start_text.setString("Press SPACE to start");
 	start_text.setFillColor(Color::Black);
 
+	Text f;
+	f.setFont(font);
+	Text lives;
+	lives.setFont(font);
+	lives.setPosition(Vector2f(700, 0));
+
+
 	SceneManager scene_manager; //handles stage/scene/whateveryoucallit and its actors/nodes/whatevers
 	while (window.isOpen())
 	{
@@ -58,8 +65,9 @@ int main()
 			Event event;
 			while (window.pollEvent(event))
 			{
-				if (scene_manager.is_loss())
+				if (scene_manager.is_loss() || scene_manager.is_win())
 				{
+					scene_manager.lives = 2;
 					scene_manager.clean_up();
 					scene_manager.set_lose(false);
 					scene_manager.set_win(false);
@@ -97,11 +105,16 @@ int main()
 		// will appear on top of background
 		window.draw(background);
 
+		f.setString("aliens destroyed: "+to_string(scene_manager.aliens_destroyed));
+		window.draw(f);
+		lives.setString("lives: "+to_string(scene_manager.lives));
+		window.draw(lives);
+
 		//if won exit with win message
 		if (scene_manager.is_win())
 		{
 			std::cout << "WIN" << std::endl;
-			exit(EXIT_SUCCESS);
+			scene_manager.start = false;
 		}
 		//check if any aliens were destroyed
 		else

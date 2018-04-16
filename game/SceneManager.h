@@ -27,6 +27,7 @@ private:
 	std::list<Missile*> missile_list; //stores the missiles in the scene
 
 	//bombs
+	float bomb_speed = 5.0f;
 	const int BOMB_LIMIT = MISSILE_LIMIT*2; //ballances the game
 	std::list<Bomb*> bomb_list; //holds list of bombs ennemies drop
 	int random; //must not be local to bomb dropping  code in collision check since it is a nested loop
@@ -42,6 +43,8 @@ private:
 
 
 public:
+	int lives = 2;
+	int aliens_destroyed = 0;
 	bool start = false;
 	//aliens
 	void draw_aliens(sf::RenderWindow &window); //calls draw in all aliens passing them the window to draw themselves on

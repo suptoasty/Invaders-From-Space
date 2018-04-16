@@ -25,7 +25,7 @@ public:
 
 	sf::Vector2f get_position() const;
 
-	void collision_check(sf::Sprite bomb);
+	void collision_check(sf::Sprite bomb, int &lives);
 	void set_position(sf::Vector2f m_position);
 	void poll_events(sf::RenderWindow &window);
 	void move_player();

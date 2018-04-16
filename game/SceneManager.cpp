@@ -33,6 +33,7 @@ void SceneManager::destroy_aliens()
 				iter = alien_list.erase(iter++);
 				if(alien_list.size() <= 10)
 					alien_speed += alien_speed/10;
+				aliens_destroyed += 1;
 			}
 			else
 				iter++;
@@ -109,7 +110,7 @@ void SceneManager::draw_bombs(sf::RenderWindow & window)
 	std::list<Bomb*>::iterator iter = bomb_list.begin();
 	while (iter != bomb_list.end())
 	{
-		(*iter)->draw(window);
+		(*iter)->draw(window, bomb_speed);
 		iter++;
 	}
 }
@@ -197,13 +198,23 @@ void SceneManager::check_collision_state()
 				}
 				m_iter++;
 			}
-			if ((*a_iter)->get_sprite().getPosition().x < 0 || (*a_iter)->get_sprite().getPosition().x > 799)
+			if ((*a_iter)->get_sprite().getPosition().x > 0 && (*a_iter)->get_sprite().getPosition().x < 800)
+				alien_down_speed = 0.0f;
+			else if ((*a_iter)->get_sprite().getPosition().x < 0)
+			{
+				alien_down_speed = 20.0f;
+				alien_speed *= -1;
+			}
+			else if ((*a_iter)->get_sprite().getPosition().x > 800)
+			{
+				alien_down_speed = 20.0f;
+				alien_speed *= -1;
+			}
+			else
 			{
 				alien_speed *= -1;
-				alien_down_speed = 100.0f;
+				alien_down_speed = 0;
 			}
-			else if ((*a_iter)->get_sprite().getPosition().x > 0 && (*a_iter)->get_sprite().getPosition().x < 800)
-				alien_down_speed = 0.0f;
 			if ((*a_iter)->get_sprite().getPosition().y >= 500)
 				m_player->set_destroy(true);
 			a_iter++;
@@ -214,9 +225,9 @@ void SceneManager::check_collision_state()
 			while (b_iter != bomb_list.end())
 			{
 				(*b_iter)->collision_check(m_player->get_sprite());
-				m_player->collision_check((*b_iter)->get_sprite());
-				if(m_player->is_destroyed() == true)
-					m_player->set_destroy(true);
+				m_player->collision_check((*b_iter)->get_sprite(), lives);
+				if (m_player->is_destroyed() == true)
+					lives--;
 				b_iter++;
 			}
 		}
@@ -236,6 +247,10 @@ void SceneManager::check_collision_state()
 				i++;
 			}
 		}
+	}
+	if (lives <= 0)
+	{
+		m_player->set_destroy(true);
 	}
 }
 
@@ -272,6 +287,7 @@ void SceneManager::repopulate_scene()
 			delete alien_texture_ptr;
 			alien_texture_ptr = nullptr;
 		}*/
+		bomb_speed = 10.0f;
 		alien_texture_ptr = &alien_texture2;
 		ALIEN_COUNT_COLUMN = (std::rand() % 5)+1; //randomize enemy count for level to (helps balance game)
 		ALIEN_COUNT_ROW = (std::rand() % 10)+1; //randomize enemy count for level to (helps balance game)
@@ -342,6 +358,8 @@ void SceneManager::game_started()
 
 void SceneManager::clean_up()
 {
+	bomb_speed = 5.0f;
+	aliens_destroyed = 0;
 	alien_speed = 3.0f;
 	level = 1;
 	if (m_player->is_destroyed())

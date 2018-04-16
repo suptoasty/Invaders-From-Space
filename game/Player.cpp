@@ -41,10 +41,12 @@ sf::Vector2f Player::get_position() const
 	return position;
 }
 
-void Player::collision_check(sf::Sprite bomb)
+void Player::collision_check(sf::Sprite bomb, int &lives)
 {
-	if (get_sprite().getGlobalBounds().intersects(bomb.getGlobalBounds()))
+	if (get_sprite().getGlobalBounds().intersects(bomb.getGlobalBounds()) && lives <= 0)
 		set_destroy(true);
+	else if (get_sprite().getGlobalBounds().intersects(bomb.getGlobalBounds()))
+		lives--;
 }
 
 void Player::set_position(sf::Vector2f m_position)

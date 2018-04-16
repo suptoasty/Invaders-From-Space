@@ -11,3 +11,4 @@ Possible Problems:
 	aliens speed up as they loose memebers
 	capped bomb limit based on missile limit to balance game
 	ship is just big enough to slip through a scatter shot to even out the odds for player
+	Bombs are faster in level2

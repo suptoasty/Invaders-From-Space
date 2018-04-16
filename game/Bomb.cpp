@@ -32,16 +32,16 @@ void Bomb::collision_check(sf::Sprite player)
 }
 
 //move bomb
-void Bomb::move_bomb()
+void Bomb::move_bomb(float &speed)
 {
-	const float DIRECTION = 5.0f;
-	bomb_sprite.move(0, DIRECTION);
+	//const float DIRECTION = 5.0f;
+	bomb_sprite.move(0, speed);
 }
 
 //draw bomb
-void Bomb::draw(sf::RenderWindow & window)
+void Bomb::draw(sf::RenderWindow & window, float &speed)
 {
-	move_bomb();
+	move_bomb(speed);
 	window.draw(bomb_sprite);
 }
 

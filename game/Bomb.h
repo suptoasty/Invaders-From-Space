@@ -20,8 +20,8 @@ public:
 	void set_destroy(bool m_destroyed);
 
 	void collision_check(sf::Sprite player);
-	void move_bomb();
-	void draw(sf::RenderWindow &window);
+	void move_bomb(float &speed);
+	void draw(sf::RenderWindow &window, float &speed);
 
 	Bomb(sf::Vector2f position);
 	~Bomb();
