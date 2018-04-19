@@ -13,6 +13,7 @@ sf::Sprite Alien::get_sprite() const
 
 void Alien::move(float &speed, float &down_speed)
 {
+
 	alien_sprite.move(speed, down_speed);
 }
 
